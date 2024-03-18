@@ -1,0 +1,84 @@
+<mat-sidenav-container class="full-height">
+    <mat-sidenav #sidenav mode="side" opened class="sidenav">
+      <div class="sidenav-header">
+        <h1 class="brand-name">CENTRALHUB</h1>
+      </div>
+  
+      <!-- User Type Selector -->
+      <div class="user-type-selector">
+        <select (change)="changeType($event)">
+          <option value="Help Desk">Help Desk</option>
+          <option value="Administrator">Administrator</option>
+          <option value="Full Control">Full Control</option>
+          <option value="Download">Download</option>
+          <option value="Read">Read</option>
+        </select>
+      </div>
+
+      <ng-template #recursiveList let-items>
+        <mat-nav-list>
+          <ng-container *ngFor="let item of items">
+            <mat-list-item *ngIf="!item.children" [routerLink]="item.route">
+              <mat-icon>{{ item.icon }}</mat-icon>
+              <span class="nav-text1">{{ item.name }}</span>
+            </mat-list-item>
+            <div *ngIf="item.children">
+              <mat-list-item (click)="toggleMenuItem(item)">
+                <mat-icon>{{ item.icon }}</mat-icon>
+                <span class="nav-text2">{{ item.name }}</span>
+                <mat-icon>{{ isMenuItemOpen(item) ? 'expand_less' : 'expand_more' }}</mat-icon>
+              </mat-list-item>
+              <div class="sub-menu" *ngIf="isMenuItemOpen(item)">
+                <ng-container *ngTemplateOutlet="recursiveList; context: {$implicit: item.children}"></ng-container>
+              </div>
+            </div>
+          </ng-container>
+        </mat-nav-list>
+      </ng-template>
+  
+      <ng-container *ngTemplateOutlet="recursiveList; context: {$implicit: userCapabilities}"></ng-container>
+  
+      <!-- Footer -->
+      <div class="sidenav-footer">
+        <div class="footer-section">
+          <mat-icon>info</mat-icon>
+          <span>HELP DESK</span>
+        </div>
+        <div class="footer-section">
+          <mat-icon>help_outline</mat-icon>
+          <span>SYSTEM FAQ</span>
+        </div>
+      </div>
+    </mat-sidenav>
+  
+    <!-- Main content area -->
+    <mat-sidenav-content class="sidenav-content">
+    <div class="classification-banner">UNCLASSIFIED</div>
+    <mat-toolbar class="app-toolbar">
+      <!-- Toggle Button -->
+      <button mat-icon-button (click)="sidenav.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+        <div class="header-content">
+          <!-- Search bar -->
+          <div class="search-container">
+            <!-- Search Input -->
+            <mat-form-field appearance="fill">
+              <mat-label>Search</mat-label>
+              <input matInput placeholder="Search...">
+            </mat-form-field>            
+          </div>
+          <!-- Profile Section -->
+          <div class="my-profile">
+            <img src="data:image/jpeg;base64,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" 
+            class="profile-pic">
+            <span class="profile-name">Yousef Ismail</span>
+          </div>
+        </div>
+      </mat-toolbar>
+      <div class="content-area">
+        <!-- Main content -->
+      </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+  
